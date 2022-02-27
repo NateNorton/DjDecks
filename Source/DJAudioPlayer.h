@@ -13,11 +13,9 @@
 
 class DJAudioPlayer : public juce::AudioSource {
 public:
-    //constructor
     DJAudioPlayer(juce::AudioFormatManager& formatManager);
-    //deconstructor
     ~DJAudioPlayer();
-    //pure virtual functions
+    
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
@@ -41,6 +39,8 @@ public:
     void playFromPlaylist(juce::URL audioURL);
     /**gets the rms values*/
     float getRmsValue(const int channel) const;
+    /** get the length in seconds of the transportSource*/
+    double getLengthInSeconds();
     
 private:
     //juce audio classes

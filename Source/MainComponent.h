@@ -4,15 +4,9 @@
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include "PlaylistComponent.h"
-//#include "SharedGUI.h"
 #include "WaveformDisplay.h"
 #include "Style.h"
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
 class MainComponent  : public juce::AudioAppComponent
 {
 public:
@@ -40,11 +34,11 @@ private:
     DJAudioPlayer player2{formatManager};
     DeckGUI deck2{&player2, formatManager, thumbnailCache};
     
-    //shared gui
-    //SharedGUI sharedGUI{&playlistComponent};
+    //player for playlist component to get meta data without intefering with the audio playback
+    DJAudioPlayer playlistPlayer{formatManager};
     
     //playlist
-    PlaylistComponent playlistComponent{&player1, &player2, &deck1, &deck2};
+    PlaylistComponent playlistComponent{&player1, &player2, &deck1, &deck2, &playlistPlayer};
     
     juce::MixerAudioSource mixerSource;
     

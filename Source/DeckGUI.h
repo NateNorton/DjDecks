@@ -47,7 +47,6 @@ public:
     void filesDropped(const juce::StringArray& files, int x, int y) override;
     bool isInterestedInDragSource(const SourceDetails &dragSourceDetails) override;
     void itemDropped(const SourceDetails &dragSourceDetails) override;
-    
     void timerCallback() override;
     
 private:

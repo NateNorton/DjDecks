@@ -112,3 +112,8 @@ void DJAudioPlayer::playFromPlaylist(juce::URL audioURL)
     play();
 }
 
+double DJAudioPlayer::getLengthInSeconds()
+{
+    return transportSource.getLengthInSeconds();
+}
+

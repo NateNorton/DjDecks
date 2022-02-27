@@ -1,19 +1,9 @@
-/*
-  ==============================================================================
-
-    LevelMeter.cpp
-    Created: 24 Feb 2022 3:14:32pm
-    Author:  Nathan Norton
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 #include "LevelMeter.h"
 
 //==============================================================================
-LevelMeter::LevelMeter(DJAudioPlayer* _player, int _channel) :
-player(_player),
+LevelMeter::LevelMeter(DJAudioPlayer* _player, int _channel)
+: player(_player),
 channel(_channel),
 level(-60.f)
 {

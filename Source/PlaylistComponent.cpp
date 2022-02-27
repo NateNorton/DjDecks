@@ -12,11 +12,16 @@
 #include "PlaylistComponent.h"
 
 //==============================================================================
-PlaylistComponent::PlaylistComponent(DJAudioPlayer* _player1, DJAudioPlayer* _player2, DeckGUI* _deck1, DeckGUI* _deck2)
+PlaylistComponent::PlaylistComponent(DJAudioPlayer* _player1,
+                                DJAudioPlayer* _player2,
+                                DeckGUI* _deck1,
+                                DeckGUI* _deck2,
+                                DJAudioPlayer* _playlistPlayer)
 :   player1(_player1),
     player2(_player2),
     deck1(_deck1),
-    deck2(_deck2)
+    deck2(_deck2),
+    playlistPlayer(_playlistPlayer)
 {
     //register as a tableListBoxModel
     tableComponent.setModel(this);
@@ -37,8 +42,9 @@ PlaylistComponent::PlaylistComponent(DJAudioPlayer* _player1, DJAudioPlayer* _pl
     
     //add columns to table
     tableComponent.getHeader().addColumn("Track title", 1, 400);
-    tableComponent.getHeader().addColumn("", 2, 200);
+    tableComponent.getHeader().addColumn("Track length", 2, 200);
     tableComponent.getHeader().addColumn("", 3, 200);
+    tableComponent.getHeader().addColumn("", 4, 200);
 }
 
 PlaylistComponent::~PlaylistComponent()
@@ -71,7 +77,7 @@ void PlaylistComponent::resized()
 
 int PlaylistComponent::getNumRows ()
 {
-    return trackTitles.size();
+    return playlistTracks.size();
 }
 
 void PlaylistComponent::paintRowBackground (
@@ -100,12 +106,17 @@ void PlaylistComponent::paintCell (
                 int height,
                 bool rowIsSelected)
 {
-    g.drawText(
-               trackTitles[rowNumber],
-               2, 0,
-               Width - 4,
-               height,
-               juce::Justification::centredLeft, true);
+    //paint track titles
+    if(columnID == 1)
+    {
+        g.drawText(playlistTracks[rowNumber].title, 2, 0, Width - 4, height, juce::Justification::centredLeft, true);
+    }
+    //paint track length
+    if(columnID == 2)
+    {
+        g.drawText(playlistTracks[rowNumber].length, 2, 0, Width - 4, height, juce::Justification::centredLeft, true);
+    }
+
 }
 
 juce::Component* PlaylistComponent::refreshComponentForCell(
@@ -114,7 +125,7 @@ juce::Component* PlaylistComponent::refreshComponentForCell(
                                                       bool isRowDelected,
                                                       Component *existingComponentToUpdate)
 {
-    if (columnID == 2)
+    if (columnID == 3)
     {
         if (existingComponentToUpdate == nullptr)
         {
@@ -150,26 +161,27 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
     else
     {
         int id = std::stoi(button->getComponentID().toStdString());
-        player1->playFromPlaylist(trackURLs[id]);
-        deck1->loadWaveformFromPlaylist(trackURLs[id]);
-        deck1->showTrackTitle(trackTitles[id]);
+        player1->playFromPlaylist(playlistTracks[id].trackURL);
+        deck1->loadWaveformFromPlaylist(playlistTracks[id].trackURL);
+        deck1->showTrackTitle(playlistTracks[id].title);
     }
 }
-
-//juce::var PlaylistComponent::getDragSourceDescription (const juce::SparseSet<int>& selectedRows)
-//{
-//    int rowIndex = selectedRows[0];
-//    return trackURLs[rowIndex];
-//}
 
 void PlaylistComponent::setTracks(juce::Array<juce::File> tracksFile)
 {
     for( int i = 0; i < tracksFile.size(); ++i)
     {
-        trackTitles.push_back(tracksFile[i].getFileName());
+        juce::String title = tracksFile[i].getFileName();
         juce::URL trackURL = juce::URL(tracksFile[i]);
-        trackURLs.push_back(trackURL);
-        //trackFiles.push_back(tracksFile[0]);
+        juce::String length = getLengthInMinutes(trackURL);
+        DBG(length);
+        
+        playlistTrack track;
+        track.title = title;
+        track.trackURL = trackURL;
+        track.length = length;
+        
+        playlistTracks.push_back(track);
     }
     tableComponent.updateContent();
 }
@@ -187,9 +199,27 @@ void PlaylistComponent::loadIntoPlaylist()
 
 void PlaylistComponent::clearPlaylistOfAllTracks()
 {
-    trackTitles.clear();
-    trackURLs.clear();
+    playlistTracks.clear();
     tableComponent.updateContent();
+}
+
+void savePlaylist()
+{
+    std::ofstream playlistFile("playlist.csv");
+}
+
+juce::String PlaylistComponent::getLengthInMinutes(juce::URL audioURL)
+{
+    playlistPlayer->loadURL(audioURL);
+    double lengthInSeconds = playlistPlayer->getLengthInSeconds();
+ 
+    int seconds = std::round(lengthInSeconds);
+    juce::String minutesString = std::to_string(seconds / 60);
+    juce::String secondsString = std::to_string(seconds % 60);
+    
+    juce::String minutesAsString = minutesString + ":" + secondsString;
+    
+    return minutesAsString;
 }
 
 
