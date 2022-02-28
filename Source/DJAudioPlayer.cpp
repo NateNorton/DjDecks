@@ -43,6 +43,10 @@ void DJAudioPlayer::releaseResources() {
 }
 
 void DJAudioPlayer::loadURL(juce::URL audioURL) {
+    // clear and reregister formats
+    // fixed playlist load issues
+    formatManager.clearFormats();
+    formatManager.registerBasicFormats();
     auto *reader = this->formatManager.createReaderFor(audioURL.createInputStream(juce::URL::InputStreamOptions{juce::URL::ParameterHandling::inAddress}));
     
     //if good file

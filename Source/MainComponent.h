@@ -25,6 +25,10 @@ public:
 
 private:
     bool playing;
+    juce::MixerAudioSource mixerSource;
+    
+    juce::AudioFormatManager formatManager;
+    juce::AudioThumbnailCache thumbnailCache{50};
     
     //deck 1
     DJAudioPlayer player1{formatManager};
@@ -40,10 +44,7 @@ private:
     //playlist
     PlaylistComponent playlistComponent{&player1, &player2, &deck1, &deck2, &playlistPlayer};
     
-    juce::MixerAudioSource mixerSource;
-    
-    juce::AudioFormatManager formatManager;
-    juce::AudioThumbnailCache thumbnailCache{50};
+
     
     //include custom look and feel
     CustomLookAndFeel customLookAndFeel;

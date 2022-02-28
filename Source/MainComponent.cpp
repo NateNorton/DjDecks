@@ -28,7 +28,7 @@ MainComponent::MainComponent()
     //playlist
     addAndMakeVisible(playlistComponent);
     
-    formatManager.registerBasicFormats();
+    //formatManager.registerBasicFormats();
 }
 
 MainComponent::~MainComponent()

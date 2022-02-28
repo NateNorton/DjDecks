@@ -23,6 +23,7 @@ struct playlistTrack
     juce::String title;
     juce::URL trackURL;
     juce::String length;
+    juce::String file;
 };
 
 class PlaylistComponent  : public juce::Component,
@@ -70,9 +71,13 @@ public:
     /**Clear the vectors holding the tracks to clear the playlist*/
     void clearPlaylistOfAllTracks();
     
+    void loadPlaylist();
+    //std::vector<juce::String> parsePlaylistFile(std::string line, char seperator);
+    
 
 
 private:
+    void savePlaylist();
     /** send an audio URL to the playlist player and get the lenfth in seconds
      then converts the seconds into a minutes value and returns this as a juce::String*/
     juce::String getLengthInMinutes(juce::URL audioURL);
@@ -84,6 +89,7 @@ private:
     juce::TextEditor searchBox;
     juce::TextButton loadToPlaylist;
     juce::TextButton clearPlaylist;
+    juce::TextButton savePlaylistButton;
     
     
     // vector of structs to hold the songs in the playlist

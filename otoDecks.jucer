@@ -5,6 +5,7 @@
               defines="JUCE_MODAL_LOOPS_PERMITTED=1" cppLanguageStandard="17">
   <MAINGROUP id="mbEqm1" name="otoDecks">
     <GROUP id="{0687316D-AF13-5D1D-1810-7129379E0CED}" name="Source">
+      <FILE id="YafSbz" name="playlist.txt" compile="0" resource="1" file="Source/playlist.txt"/>
       <FILE id="mEY0Ni" name="LevelMeter.cpp" compile="1" resource="0" file="Source/LevelMeter.cpp"/>
       <FILE id="PQpSl2" name="LevelMeter.h" compile="0" resource="0" file="Source/LevelMeter.h"/>
       <FILE id="QwP9Qb" name="Style.cpp" compile="1" resource="0" file="Source/Style.cpp"/>
