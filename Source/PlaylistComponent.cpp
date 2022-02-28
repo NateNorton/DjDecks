@@ -128,23 +128,31 @@ void PlaylistComponent::paintCell (
     
 }
 
-juce::Component* PlaylistComponent::refreshComponentForCell(
-                                                            int rowNumber,
-                                                            int columnID,
-                                                            bool isRowDelected,
-                                                            Component *existingComponentToUpdate)
+juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
+                                                    int columnID,
+                                                    bool isRowDelected,
+                                                    Component *existingComponentToUpdate)
 {
-    if (columnID == 3)
+    if (columnID == 3 || columnID == 4)
     {
         if (existingComponentToUpdate == nullptr)
         {
             juce::TextButton* btn = new juce::TextButton("deck 1");
+            // set button text
+            // left deck
+            if (columnID == 3)
+            {
+                btn = new juce::TextButton("Play left");
+            }
+            if (columnID == 4)
+            {
+                btn = new juce::TextButton("Play right");
+            }
             btn->addListener(this);
-            
             //give the button an id so we can recognize it in buttonClicked()
-            juce::String id{std::to_string(rowNumber)};
+            //convert row and col coord into string value
+            juce::String id{std::to_string(rowNumber) + std::to_string(columnID)};
             btn->setComponentID(id);
-            
             existingComponentToUpdate = btn;
         }
     }
@@ -173,11 +181,36 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
     }
     else
     {
-        int id = std::stoi(button->getComponentID().toStdString());
-        player1->playFromPlaylist(playlistTracks[id].trackURL);
-        deck1->loadWaveformFromPlaylist(playlistTracks[id].trackURL);
-        deck1->showTrackTitle(playlistTracks[id].title);
+        int row = parseRow(button->getComponentID());
+        int col = parseCol(button->getComponentID());
+        //play on left deck
+        if(col == 3)
+        {
+            player1->playFromPlaylist(playlistTracks[row].trackURL);
+            deck1->loadWaveformFromPlaylist(playlistTracks[row].trackURL);
+            deck1->showTrackTitle(playlistTracks[row].title);
+        }
+        //play on right deck
+        if(col == 4)
+        {
+            player2->playFromPlaylist(playlistTracks[row].trackURL);
+            deck2->loadWaveformFromPlaylist(playlistTracks[row].trackURL);
+            deck2->showTrackTitle(playlistTracks[row].title);
+        }
     }
+}
+
+//buttonID = row concat col
+int PlaylistComponent::parseRow(juce::String buttonID)
+{
+    juce::String rowStr = buttonID.dropLastCharacters(1);
+    return rowStr.getIntValue();
+}
+
+int PlaylistComponent::parseCol(juce::String buttonID)
+{
+    juce::String colStr = juce::String::charToString(buttonID.getLastCharacter());
+    return colStr.getIntValue();
 }
 
 void PlaylistComponent::setTracks(juce::Array<juce::File> tracksFile)
@@ -254,32 +287,6 @@ void PlaylistComponent::loadPlaylist()
     savedPlaylist.close();
 }
 
-//// repurposed tokenise function from advisor bot project
-//std::vector<juce::String> PlaylistComponent::parsePlaylistFile(std::string line, char seperator)
-//{
-//    std::vector<juce::String> tokens;
-//    std::size_t start, end;
-//    std::string token;
-//    start = line.find_first_not_of(seperator, 0);
-//    do
-//    {
-//        end = line.find_first_of(seperator, start);
-//        if(start == line.length() || start == end) break;
-//        if(end >= 0)
-//        {
-//            token = line.substr(start, end - start);
-//        }
-//        else
-//        {
-//            token = line.substr(start, line.length() - start);
-//        }
-//        tokens.push_back(token);
-//        start = end + 1;
-//    }
-//    while (end > 0);
-//    return tokens;
-//}
-
 juce::String PlaylistComponent::getLengthInMinutes(juce::URL audioURL)
 {
     playlistPlayer->loadURL(audioURL);
@@ -293,5 +300,3 @@ juce::String PlaylistComponent::getLengthInMinutes(juce::URL audioURL)
     
     return minutesAsString;
 }
-
-

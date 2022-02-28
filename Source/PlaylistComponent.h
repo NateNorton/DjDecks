@@ -30,6 +30,7 @@ class PlaylistComponent  : public juce::Component,
                         public juce::TableListBoxModel,
                         public juce::Button::Listener,
                         public juce::DragAndDropContainer
+                        //public juce::TableHeaderComponent::Listener
 {
 public:
     PlaylistComponent(DJAudioPlayer* _player1, DJAudioPlayer* _player2, DeckGUI* _deck1, DeckGUI* _deck2, DJAudioPlayer* _playlistPlayer);
@@ -37,7 +38,6 @@ public:
 
     void paint (juce::Graphics&) override;
     void resized () override;
-    
     int getNumRows () override;
     void paintRowBackground (
                              juce::Graphics& g,
@@ -58,33 +58,29 @@ public:
                                         int columnID,
                                         bool isRowDelected,
                                         Component *existingComponentToUpdate) override;
-    
     void cellClicked (int rowNumber, int columnID, const juce::MouseEvent&) override;
-    
     void buttonClicked(juce::Button* button) override;
-    
+    //void tableColumnsChanged (TableHeaderComponent *tableHeader) override;
+    //void tableColumnsResized (TableHeaderComponent *tableHeader) override;
+    //void tableSortOrderChanged (TableHeaderComponent *tableHeader) override;
+private:
+    /**gets the last char in the id string, converts it to an int value and returns*/
+    int parseCol(juce::String buttonID);
+    /**Drops the final char of the string and converst the rmaining into an int id and returns*/
+    int parseRow(juce::String buttonID);
     void setTracks(juce::Array<juce::File> tracksFile);
-    
-    /**will load tracks into playlist when load button is clicked using juce file chooser*/
-    void loadIntoPlaylist();
-    
+    /** called on initialization, creates a playlist from the csv created by save Playlist*/
+    void loadPlaylist();
     /**Clear the vectors holding the tracks to clear the playlist*/
     void clearPlaylistOfAllTracks();
-    
-    void loadPlaylist();
-    //std::vector<juce::String> parsePlaylistFile(std::string line, char seperator);
-    
-
-
-private:
+    /** save playlist upon close or clicking the save button*/
     void savePlaylist();
+    /**will load tracks into playlist when load button is clicked using juce file chooser*/
+    void loadIntoPlaylist();
     /** send an audio URL to the playlist player and get the lenfth in seconds
      then converts the seconds into a minutes value and returns this as a juce::String*/
     juce::String getLengthInMinutes(juce::URL audioURL);
-    
-    
     juce::TableListBox tableComponent;
-    
     //inputs for the playlist- load button, clear button and search box
     juce::TextEditor searchBox;
     juce::TextButton loadToPlaylist;
@@ -100,7 +96,6 @@ private:
     DJAudioPlayer* player2;
     DeckGUI* deck1;
     DeckGUI* deck2;
-    
     // create instance of an ausio plkayer to parse meta data so not to intefer with audio playback on either deck
     DJAudioPlayer* playlistPlayer;
     
