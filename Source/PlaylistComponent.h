@@ -24,13 +24,15 @@ struct playlistTrack
     juce::URL trackURL;
     juce::String length;
     juce::String file;
+    bool searched;
 };
 
 class PlaylistComponent  : public juce::Component,
                         public juce::TableListBoxModel,
                         public juce::Button::Listener,
                         public juce::DragAndDropContainer,
-                        public juce::TableHeaderComponent::Listener
+                        public juce::TableHeaderComponent::Listener,
+                        public juce::TextEditor::Listener
 {
 public:
     PlaylistComponent(DJAudioPlayer* _player1, DJAudioPlayer* _player2, DeckGUI* _deck1, DeckGUI* _deck2, DJAudioPlayer* _playlistPlayer);
@@ -57,6 +59,9 @@ public:
     void tableColumnsChanged (juce::TableHeaderComponent *tableHeader) override;
     void tableColumnsResized (juce::TableHeaderComponent *tableHeader) override;
     void tableSortOrderChanged (juce::TableHeaderComponent *tableHeader) override;
+    
+    /**called when return is pressed*/
+    void textEditorReturnKeyPressed (juce::TextEditor &) override;
 private:
     void deleteSingleTrackFromPlaylist(unsigned int row);
     /**gets the last char in the id string, converts it to an int value and returns*/

@@ -34,6 +34,11 @@ playlistPlayer(_playlistPlayer)
     savePlaylistButton.setButtonText("Save  playlist");
     savePlaylistButton.addListener(this);
     
+    //SEARCH BOX
+    addAndMakeVisible(searchBox);
+    searchBox.setMultiLine(false);
+    searchBox.addListener(this);
+    
     
     
     //add columns to table
@@ -71,8 +76,8 @@ void PlaylistComponent::resized()
     
     loadToPlaylist.setBounds(0, 0, widthSection, heightSection);
     clearPlaylist.setBounds(widthSection, 0, widthSection, heightSection);
-    searchBox.setBounds(widthSection * 2, 0, widthSection, heightSection);
-    savePlaylistButton.setBounds(widthSection * 3, 0, widthSection, heightSection);
+    savePlaylistButton.setBounds(widthSection * 2, 0, widthSection, heightSection);
+    searchBox.setBounds(widthSection * 3, 0, widthSection * 3, heightSection);
     tableComponent.setBounds(0, heightSection, getWidth(), getHeight() - heightSection);
 }
 
@@ -94,7 +99,14 @@ void PlaylistComponent::paintRowBackground (juce::Graphics& g,
     }
     else
     {
-        g.fillAll(juce::Colour{ 162, 213, 198 });
+        if(playlistTracks[rowNumber].searched == true)
+        {
+            g.fillAll(juce::Colour{ 255, 0, 0});
+        }
+        else
+        {
+            g.fillAll(juce::Colour{ 162, 213, 198 });
+        }
     }
 }
 
@@ -235,6 +247,7 @@ void PlaylistComponent::setTracks(juce::Array<juce::File> tracksFile)
         track.trackURL = trackURL;
         track.length = length;
         track.file = tracksFile[i].getFullPathName();
+        track.searched = false;
     
         playlistTracks.push_back(track);
     }
@@ -327,4 +340,33 @@ void PlaylistComponent::tableColumnsResized (juce::TableHeaderComponent *tableHe
 void PlaylistComponent::tableSortOrderChanged (juce::TableHeaderComponent *tableHeader)
 {
     
+}
+
+void PlaylistComponent::textEditorReturnKeyPressed (juce::TextEditor &)
+{
+    juce::String searchBoxText = searchBox.getText();
+    for(playlistTrack& t : playlistTracks)
+    {
+        //if no search made then all tracks searched should be false
+        if(searchBoxText.isEmpty() == true)
+        {
+            t.searched = false;
+        }
+        else
+        {
+            // check if the title contains the search string, if so set searched to true
+            // will be hilighted in red in paint
+            if(t.title.contains(searchBoxText))
+            {
+                t.searched = true;
+                tableComponent.updateContent();
+            }
+            else
+            {
+                t.searched = false;
+                tableComponent.updateContent();
+            }
+        }
+    }
+ 
 }
