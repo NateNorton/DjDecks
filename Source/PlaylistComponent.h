@@ -29,8 +29,8 @@ struct playlistTrack
 class PlaylistComponent  : public juce::Component,
                         public juce::TableListBoxModel,
                         public juce::Button::Listener,
-                        public juce::DragAndDropContainer
-                        //public juce::TableHeaderComponent::Listener
+                        public juce::DragAndDropContainer,
+                        public juce::TableHeaderComponent::Listener
 {
 public:
     PlaylistComponent(DJAudioPlayer* _player1, DJAudioPlayer* _player2, DeckGUI* _deck1, DeckGUI* _deck2, DJAudioPlayer* _playlistPlayer);
@@ -39,31 +39,26 @@ public:
     void paint (juce::Graphics&) override;
     void resized () override;
     int getNumRows () override;
-    void paintRowBackground (
-                             juce::Graphics& g,
-                             int rowNumber,
-                             int width,
-                             int height,
-                             bool rowIsSelected) override;
-    void paintCell (
-                    juce::Graphics& g,
+    void paintRowBackground (juce::Graphics& g,
+                        int rowNumber,
+                        int width,
+                        int height,
+                        bool rowIsSelected) override;
+    void paintCell (  juce::Graphics& g,
                     int rowNumber,
                     int columnID,
                     int Width,
                     int height,
                     bool rowIsSelected) override;
     
-    juce::Component* refreshComponentForCell (
-                                        int rowNumber,
-                                        int columnID,
-                                        bool isRowDelected,
-                                        Component *existingComponentToUpdate) override;
+    juce::Component* refreshComponentForCell (int rowNumber, int columnID, bool isRowDelected, Component *existingComponentToUpdate) override;
     void cellClicked (int rowNumber, int columnID, const juce::MouseEvent&) override;
     void buttonClicked(juce::Button* button) override;
-    //void tableColumnsChanged (TableHeaderComponent *tableHeader) override;
-    //void tableColumnsResized (TableHeaderComponent *tableHeader) override;
-    //void tableSortOrderChanged (TableHeaderComponent *tableHeader) override;
+    void tableColumnsChanged (juce::TableHeaderComponent *tableHeader) override;
+    void tableColumnsResized (juce::TableHeaderComponent *tableHeader) override;
+    void tableSortOrderChanged (juce::TableHeaderComponent *tableHeader) override;
 private:
+    void deleteSingleTrackFromPlaylist(unsigned int row);
     /**gets the last char in the id string, converts it to an int value and returns*/
     int parseCol(juce::String buttonID);
     /**Drops the final char of the string and converst the rmaining into an int id and returns*/

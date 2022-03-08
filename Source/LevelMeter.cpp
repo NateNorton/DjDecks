@@ -20,7 +20,7 @@ void LevelMeter::paint (juce::Graphics& g)
     auto bounds = getLocalBounds().toFloat();
     
     //set background colour
-    g.setColour(juce::Colours::black);
+    g.setColour(juce::Colour{ 36, 24, 57 });
     //create a filled rectangle taking up the whole component
     g.fillRect(bounds);
     
@@ -37,13 +37,13 @@ void LevelMeter::resized()
     //create colour gradient going from green to red
     gradient = juce::ColourGradient
     {
-        juce::Colours::green,
+        juce::Colour{ 162, 213, 198 },
         bounds.getBottomLeft(),
-        juce::Colours::red,
+        juce::Colour{ 84, 15, 19 },
         bounds.getTopRight(),
         false
     };
-    gradient.addColour(0.5, juce::Colours::yellow);
+    gradient.addColour(0.3, juce::Colour{ 7, 123, 138 });
 }
 
 void LevelMeter::setLevel(const float value)

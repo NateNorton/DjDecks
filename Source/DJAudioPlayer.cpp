@@ -44,7 +44,7 @@ void DJAudioPlayer::releaseResources() {
 
 void DJAudioPlayer::loadURL(juce::URL audioURL) {
     // clear and reregister formats
-    // fixed playlist load issues
+    // fixed playlist load issues5
     formatManager.clearFormats();
     formatManager.registerBasicFormats();
     auto *reader = this->formatManager.createReaderFor(audioURL.createInputStream(juce::URL::InputStreamOptions{juce::URL::ParameterHandling::inAddress}));
@@ -97,10 +97,14 @@ void DJAudioPlayer::setPositionRelative(double pos) {
     }
 }
 
-void DJAudioPlayer::setSpeed(double ratio) {
-    if(ratio < 0 || ratio > 100.0) {
+void DJAudioPlayer::setSpeed(double ratio)
+{
+    if(ratio < 0 || ratio > 100.0)
+    {
         DBG("Speed ratio must be between 0 and 100");
-    } else {
+    }
+    else
+    {
         resampleSource.setResamplingRatio(ratio);
     }
 }
@@ -120,4 +124,3 @@ double DJAudioPlayer::getLengthInSeconds()
 {
     return transportSource.getLengthInSeconds();
 }
-

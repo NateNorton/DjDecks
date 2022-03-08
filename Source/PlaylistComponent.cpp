@@ -1,15 +1,6 @@
-/*
- ==============================================================================
- 
- PlaylistComponent.cpp
- Created: 17 Feb 2022 2:03:09pm
- Author:  Nathan Norton
- 
- ==============================================================================
- */
-
 #include <JuceHeader.h>
 #include "PlaylistComponent.h"
+#include <climits>
 
 //==============================================================================
 PlaylistComponent::PlaylistComponent(DJAudioPlayer* _player1,
@@ -48,8 +39,9 @@ playlistPlayer(_playlistPlayer)
     //add columns to table
     tableComponent.getHeader().addColumn("Track title", 1, 400);
     tableComponent.getHeader().addColumn("Track length", 2, 200);
-    tableComponent.getHeader().addColumn("", 3, 200);
-    tableComponent.getHeader().addColumn("", 4, 200);
+    tableComponent.getHeader().addColumn("", 3, 100); //left deck
+    tableComponent.getHeader().addColumn("", 4, 100); // rigth deck
+    tableComponent.getHeader().addColumn("", 5, 100); // column for delete button
     
     loadPlaylist();
 }
@@ -61,10 +53,10 @@ PlaylistComponent::~PlaylistComponent()
 
 void PlaylistComponent::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
+    g.fillAll(juce::Colour{ 36, 24, 57 });   // clear the background
     
-    g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+    g.setColour (juce::Colour{ 7, 123, 138 });
+    g.drawRect (getLocalBounds(), 3);   // draw an outline around the component
     
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
@@ -86,35 +78,42 @@ void PlaylistComponent::resized()
 
 int PlaylistComponent::getNumRows ()
 {
-    return playlistTracks.size();
+    return playlistTracks.size() & INT_MAX;
 }
 
-void PlaylistComponent::paintRowBackground (
-                                            juce::Graphics& g,
-                                            int rowNumber,
-                                            int width,
-                                            int height,
-                                            bool rowIsSelected)
+void PlaylistComponent::paintRowBackground (juce::Graphics& g,
+                                    int rowNumber,
+                                    int width,
+                                    int height,
+                                    bool rowIsSelected)
 {
     //hilight selected row
     if(rowIsSelected)
     {
-        g.fillAll(juce::Colours::orange);
+        g.fillAll(juce::Colour{ 7, 123, 138 });
     }
     else
     {
-        g.fillAll(juce::Colours::darkgrey);
+        g.fillAll(juce::Colour{ 162, 213, 198 });
     }
 }
 
-void PlaylistComponent::paintCell (
-                                   juce::Graphics& g,
-                                   int rowNumber,
-                                   int columnID,
-                                   int Width,
-                                   int height,
-                                   bool rowIsSelected)
+void PlaylistComponent::paintCell (juce::Graphics& g,
+                            int rowNumber,
+                            int columnID,
+                            int Width,
+                            int height,
+                            bool rowIsSelected)
 {
+    //set the drawing colour
+    if (rowIsSelected)
+    {
+        g.setColour(juce::Colour{ 162, 213, 198 });
+    }
+    else
+    {
+        g.setColour(juce::Colour{ 84, 15, 19 });
+    }
     //paint track titles
     if(columnID == 1)
     {
@@ -133,20 +132,24 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
                                                     bool isRowDelected,
                                                     Component *existingComponentToUpdate)
 {
-    if (columnID == 3 || columnID == 4)
+    if (columnID == 3 || columnID == 4 || columnID == 5)
     {
         if (existingComponentToUpdate == nullptr)
         {
             juce::TextButton* btn = new juce::TextButton("deck 1");
             // set button text
-            // left deck
-            if (columnID == 3)
-            {
-                btn = new juce::TextButton("Play left");
-            }
-            if (columnID == 4)
-            {
-                btn = new juce::TextButton("Play right");
+            switch (columnID) {
+                case 3:
+                    btn->setButtonText("Play Left");
+                    break;
+                case 4:
+                    btn->setButtonText("Play right");
+                    break;
+                case 5:
+                    btn->setButtonText("Delete");
+                    break;
+                default:
+                    break;
             }
             btn->addListener(this);
             //give the button an id so we can recognize it in buttonClicked()
@@ -181,6 +184,7 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
     }
     else
     {
+    
         int row = parseRow(button->getComponentID());
         int col = parseCol(button->getComponentID());
         //play on left deck
@@ -196,6 +200,11 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
             player2->playFromPlaylist(playlistTracks[row].trackURL);
             deck2->loadWaveformFromPlaylist(playlistTracks[row].trackURL);
             deck2->showTrackTitle(playlistTracks[row].title);
+        }
+        //delete track button
+        if(col == 5)
+        {
+            deleteSingleTrackFromPlaylist(row);
         }
     }
 }
@@ -220,14 +229,13 @@ void PlaylistComponent::setTracks(juce::Array<juce::File> tracksFile)
         juce::String title = tracksFile[i].getFileName();
         juce::URL trackURL = juce::URL(tracksFile[i]);
         juce::String length = getLengthInMinutes(trackURL);
-        DBG(length);
         
         playlistTrack track;
         track.title = title;
         track.trackURL = trackURL;
         track.length = length;
         track.file = tracksFile[i].getFullPathName();
-        
+    
         playlistTracks.push_back(track);
     }
     tableComponent.updateContent();
@@ -247,6 +255,13 @@ void PlaylistComponent::loadIntoPlaylist()
 void PlaylistComponent::clearPlaylistOfAllTracks()
 {
     playlistTracks.clear();
+    tableComponent.updateContent();
+}
+
+void PlaylistComponent::deleteSingleTrackFromPlaylist(unsigned int row)
+{
+    playlistTracks.erase(playlistTracks.begin() + row);
+    
     tableComponent.updateContent();
 }
 
@@ -299,4 +314,17 @@ juce::String PlaylistComponent::getLengthInMinutes(juce::URL audioURL)
     juce::String minutesAsString = minutesString + ":" + secondsString;
     
     return minutesAsString;
+}
+
+void PlaylistComponent::tableColumnsChanged (juce::TableHeaderComponent *tableHeader)
+{
+    
+}
+void PlaylistComponent::tableColumnsResized (juce::TableHeaderComponent *tableHeader)
+{
+    
+}
+void PlaylistComponent::tableSortOrderChanged (juce::TableHeaderComponent *tableHeader)
+{
+    
 }

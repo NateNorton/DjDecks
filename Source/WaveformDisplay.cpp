@@ -27,14 +27,14 @@ WaveformDisplay::~WaveformDisplay() {
 
 void WaveformDisplay::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-    g.setColour (juce::Colours::grey);
+    g.fillAll (juce::Colour{ 162, 213, 198 });
+    g.setColour (juce::Colour{ 36, 24, 57 });
     g.drawRect(getLocalBounds(), 1);
-    g.setColour (juce::Colours::orange);
+    g.setColour (juce::Colour{ 36, 24, 57 });
     if(fileLoaded)
     {
         audioThumbnail.drawChannel(g, getLocalBounds(), 0, audioThumbnail.getTotalLength(), 0, 1);
-        g.setColour(juce::Colours::green);
+        g.setColour(juce::Colour{ 7, 123, 138 });
         g.drawRect(position * getWidth(), 0, getWidth() / 50, getHeight());
     }
     else

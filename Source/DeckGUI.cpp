@@ -1,13 +1,3 @@
-/*
- ==============================================================================
- 
- DeckGUI.cpp
- Created: 3 Feb 2022 4:15:40pm
- Author:  Nathan Norton
- 
- ==============================================================================
- */
-
 #include <JuceHeader.h>
 #include "DeckGUI.h"
 
@@ -79,15 +69,18 @@ waveformDisplay(_player, formatManagerToUse, cacheToUse)
     startTimer(100);
 }
 
-DeckGUI::~DeckGUI() {
+DeckGUI::~DeckGUI()
+{
     stopTimer();
 }
 
-void DeckGUI::paint (juce::Graphics& g) {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+void DeckGUI::paint (juce::Graphics& g)
+{
+    g.fillAll(juce::Colour{ 36, 24, 57 });
 }
 
-void DeckGUI::resized() {
+void DeckGUI::resized()
+{
     float rowH = getHeight() / 12;
     float rowW = getWidth() / 10;
     
@@ -112,17 +105,21 @@ void DeckGUI::resized() {
     loadButton.setBounds(0,  rowH * 6, rowW * 7, rowH * 2);
 }
 
-void DeckGUI::buttonClicked(juce::Button* button) {
-    if(button == &playButton) {
+void DeckGUI::buttonClicked(juce::Button* button)
+{
+    if(button == &playButton)
+    {
         player->setPosition(0);
         player->play();
     }
     
-    if(button == &stopButton) {
+    if(button == &stopButton)
+    {
         player->stop();
     }
     
-    if(button == &loadButton) {
+    if(button == &loadButton)
+    {
         auto dlgFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
         
         this -> chooser.launchAsync(dlgFlags, [this](const juce::FileChooser& chooser){
@@ -140,16 +137,20 @@ void DeckGUI::loadWaveformFromPlaylist(juce::URL audioURL)
     waveformDisplay.loadURL(audioURL);
 }
 
-void DeckGUI::sliderValueChanged(juce::Slider* slider) {
-    if(slider == &volumeSlider) {
+void DeckGUI::sliderValueChanged(juce::Slider* slider)
+{
+    if(slider == &volumeSlider)
+    {
         player->setGain(slider->getValue());
     }
     
-    if(slider == &positionSlider) {
+    if(slider == &positionSlider)
+    {
         player ->setPositionRelative(slider->getValue());
     }
     
-    if(slider == &speedSlider) {
+    if(slider == &speedSlider)
+    {
         player->setSpeed(slider->getValue());
     }
 }
@@ -159,14 +160,15 @@ void DeckGUI::showTrackTitle(juce::String track)
     trackTitle.setText(track, juce::NotificationType::dontSendNotification);
 }
 
-bool DeckGUI::isInterestedInFileDrag(const juce::StringArray& files) {
+bool DeckGUI::isInterestedInFileDrag(const juce::StringArray& files)
+{
     DBG("DeckGUI::isInterestedInFileDrag");
     return true;
 }
 
 void DeckGUI::filesDropped(const juce::StringArray& files, int x, int y) {
-    for(juce::String filename : files) {
-        DBG("DeckGUI::filesDropped " << filename);
+    for(juce::String filename : files)
+    {
         juce::URL fileURL = juce::URL{juce::File{filename}};
         player->loadURL(fileURL);
         waveformDisplay.loadURL(fileURL);
