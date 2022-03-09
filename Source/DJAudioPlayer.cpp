@@ -1,13 +1,3 @@
-/*
- ==============================================================================
- 
- DJAudioPlayer.cpp
- Created: 3 Feb 2022 12:29:52pm
- Author:  Nathan Norton
- 
- ==============================================================================
- */
-
 #include "DJAudioPlayer.h"
 
 DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager& _formatManager)

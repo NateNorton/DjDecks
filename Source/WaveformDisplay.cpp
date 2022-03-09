@@ -1,13 +1,3 @@
-/*
- ==============================================================================
- 
- WaveformDisplay.cpp
- Created: 7 Feb 2022 2:19:57pm
- Author:  Nathan Norton
- 
- ==============================================================================
- */
-
 #include "WaveformDisplay.h"
 
 WaveformDisplay::WaveformDisplay(DJAudioPlayer* _player,

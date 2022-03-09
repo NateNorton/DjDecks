@@ -99,14 +99,7 @@ void PlaylistComponent::paintRowBackground (juce::Graphics& g,
     }
     else
     {
-        if(playlistTracks[rowNumber].searched == true)
-        {
-            g.fillAll(juce::Colour{ 255, 0, 0});
-        }
-        else
-        {
-            g.fillAll(juce::Colour{ 162, 213, 198 });
-        }
+        playlistTracks[rowNumber].searched ? g.fillAll(juce::Colour{ 255, 0, 0}) : g.fillAll(juce::Colour{ 162, 213, 198 });
     }
 }
 
@@ -118,14 +111,7 @@ void PlaylistComponent::paintCell (juce::Graphics& g,
                             bool rowIsSelected)
 {
     //set the drawing colour
-    if (rowIsSelected)
-    {
-        g.setColour(juce::Colour{ 162, 213, 198 });
-    }
-    else
-    {
-        g.setColour(juce::Colour{ 84, 15, 19 });
-    }
+    rowIsSelected ? g.setColour(juce::Colour{ 162, 213, 198 }) : g.setColour(juce::Colour{ 84, 15, 19 });
     //paint track titles
     if(columnID == 1)
     {
@@ -172,12 +158,6 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
         }
     }
     return existingComponentToUpdate;
-}
-
-//use to see where we clicked (IMPORTANT for future)
-void PlaylistComponent::cellClicked (int rowNumber, int columnID, const juce::MouseEvent&)
-{
-    std::cout << "row number: " << rowNumber << " columnID: " << columnID <<std::endl;
 }
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
@@ -345,7 +325,7 @@ void PlaylistComponent::tableSortOrderChanged (juce::TableHeaderComponent *table
 void PlaylistComponent::textEditorReturnKeyPressed (juce::TextEditor &)
 {
     juce::String searchBoxText = searchBox.getText();
-    for(playlistTrack& t : playlistTracks)
+    for (playlistTrack& t : playlistTracks)
     {
         //if no search made then all tracks searched should be false
         if(searchBoxText.isEmpty() == true)
@@ -359,14 +339,12 @@ void PlaylistComponent::textEditorReturnKeyPressed (juce::TextEditor &)
             if(t.title.contains(searchBoxText))
             {
                 t.searched = true;
-                tableComponent.updateContent();
             }
             else
             {
                 t.searched = false;
-                tableComponent.updateContent();
             }
         }
     }
- 
+    tableComponent.updateContent();
 }

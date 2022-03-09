@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    PlaylistComponent.h
-    Created: 17 Feb 2022 2:03:09pm
-    Author:  Nathan Norton
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -16,16 +6,6 @@
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include <fstream>
-
-//struct to hold each track for the playlist
-struct playlistTrack
-{
-    juce::String title;
-    juce::URL trackURL;
-    juce::String length;
-    juce::String file;
-    bool searched;
-};
 
 class PlaylistComponent  : public juce::Component,
                         public juce::TableListBoxModel,
@@ -54,7 +34,6 @@ public:
                     bool rowIsSelected) override;
     
     juce::Component* refreshComponentForCell (int rowNumber, int columnID, bool isRowDelected, Component *existingComponentToUpdate) override;
-    void cellClicked (int rowNumber, int columnID, const juce::MouseEvent&) override;
     void buttonClicked(juce::Button* button) override;
     void tableColumnsChanged (juce::TableHeaderComponent *tableHeader) override;
     void tableColumnsResized (juce::TableHeaderComponent *tableHeader) override;
@@ -80,22 +59,37 @@ private:
     /** send an audio URL to the playlist player and get the lenfth in seconds
      then converts the seconds into a minutes value and returns this as a juce::String*/
     juce::String getLengthInMinutes(juce::URL audioURL);
+    
+    //struct to hold each track for the playlist
+    struct playlistTrack
+    {
+        juce::String title;
+        juce::URL trackURL;
+        juce::String length;
+        juce::String file;
+        bool searched;
+    };
+    
+    
     juce::TableListBox tableComponent;
-    //inputs for the playlist- load button, clear button and search box
+    //input elements for the playlist
     juce::TextEditor searchBox;
     juce::TextButton loadToPlaylist;
     juce::TextButton clearPlaylist;
     juce::TextButton savePlaylistButton;
     
-    
     // vector of structs to hold the songs in the playlist
     // Will be saved when closing the application to a csv file
     std::vector<playlistTrack> playlistTracks;
     
+    //audio players
     DJAudioPlayer* player1;
     DJAudioPlayer* player2;
+    
+    //GUIs
     DeckGUI* deck1;
     DeckGUI* deck2;
+    
     // create instance of an ausio plkayer to parse meta data so not to intefer with audio playback on either deck
     DJAudioPlayer* playlistPlayer;
     

@@ -1,13 +1,3 @@
-/*
- ==============================================================================
- 
- WaveformDisplay.h
- Created: 7 Feb 2022 2:19:57pm
- Author:  Nathan Norton
- 
- ==============================================================================
- */
-
 #pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "DJAudioPlayer.h"
