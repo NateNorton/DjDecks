@@ -130,7 +130,7 @@ void CustomLookAndFeel::drawLinearSlider (juce::Graphics& g, int x, int y, int w
 {
     if (slider.isBar())
     {
-        g.setColour (slider.findColour (juce::Slider::trackColourId));
+        g.setColour (juce::Colour{ 162, 213, 198 });
         g.fillRect (slider.isHorizontal() ? juce::Rectangle<float> (static_cast<float> (x), (float) y + 0.5f, sliderPos - (float) x, (float) height - 1.0f)
                                           : juce::Rectangle<float> ((float) x + 0.5f, sliderPos, (float) width - 1.0f, (float) y + ((float) height - sliderPos)));
     }
@@ -150,7 +150,7 @@ void CustomLookAndFeel::drawLinearSlider (juce::Graphics& g, int x, int y, int w
         juce::Path backgroundTrack;
         backgroundTrack.startNewSubPath (startPoint);
         backgroundTrack.lineTo (endPoint);
-        g.setColour (slider.findColour (juce::Slider::backgroundColourId));
+        g.setColour (juce::Colour{ 162, 213, 198 });
         g.strokePath (backgroundTrack, { trackWidth, juce::PathStrokeType::curved, juce::PathStrokeType::rounded });
 
         juce::Path valueTrack;
@@ -177,17 +177,19 @@ void CustomLookAndFeel::drawLinearSlider (juce::Graphics& g, int x, int y, int w
             maxPoint = { kx, ky };
         }
 
-        auto thumbWidth = getSliderThumbRadius (slider);
+        auto thumbWidth = getSliderThumbRadius (slider) * 3;
+        auto thumbHeight = getSliderThumbRadius(slider);
 
         valueTrack.startNewSubPath (minPoint);
         valueTrack.lineTo (isThreeVal ? thumbPoint : maxPoint);
-        g.setColour (slider.findColour (juce::Slider::trackColourId));
+        g.setColour (juce::Colour{ 7, 123, 138 });
         g.strokePath (valueTrack, { trackWidth, juce::PathStrokeType::curved, juce::PathStrokeType::rounded });
 
         if (! isTwoVal)
         {
-            g.setColour (slider.findColour (juce::Slider::thumbColourId));
-            g.fillEllipse (juce::Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbWidth)).withCentre (isThreeVal ? thumbPoint : maxPoint));
+            g.setColour(juce::Colour{ 84, 15, 19 });
+            //g.setColour (slider.findColour (juce::Slider::thumbColourId));
+            g.fillRect (juce::Rectangle<float> (static_cast<float> (thumbWidth), static_cast<float> (thumbHeight)).withCentre (isThreeVal ? thumbPoint : maxPoint));
         }
 
         if (isTwoVal || isThreeVal)

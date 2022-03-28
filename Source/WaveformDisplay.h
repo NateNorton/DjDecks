@@ -11,7 +11,9 @@ public:
                     juce::AudioThumbnailCache& cacheToUse);
     ~WaveformDisplay();
     void paint (juce::Graphics&) override;
+    /**Called when windows size is changed*/
     void resized() override;
+    /**implemented to receive the callback*/
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
     /** called when a mouse button is pressed */
     void mouseDown(const juce::MouseEvent& event) override;

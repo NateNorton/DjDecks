@@ -105,6 +105,8 @@ void DeckGUI::resized()
     loadButton.setBounds(0,  rowH * 6, rowW * 7, rowH * 2);
 }
 
+//When a button is clicked we check its memory address against the memory addresses of those in the
+//DeckGUI to determine what button was pressed
 void DeckGUI::buttonClicked(juce::Button* button)
 {
     if(button == &playButton)
@@ -137,6 +139,8 @@ void DeckGUI::loadWaveformFromPlaylist(juce::URL audioURL)
     waveformDisplay.loadURL(audioURL);
 }
 
+//When a sliders value is changed, we check its memory address against the memory address of the sliders in the deckGUI
+//To determine what sliders value was changed
 void DeckGUI::sliderValueChanged(juce::Slider* slider)
 {
     if(slider == &volumeSlider)
@@ -155,6 +159,7 @@ void DeckGUI::sliderValueChanged(juce::Slider* slider)
     }
 }
 
+//Display track at the top of each deck
 void DeckGUI::showTrackTitle(juce::String track)
 {
     trackTitle.setText(track, juce::NotificationType::dontSendNotification);

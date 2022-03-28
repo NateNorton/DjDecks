@@ -62,11 +62,6 @@ void PlaylistComponent::paint (juce::Graphics& g)
     
     g.setColour (juce::Colour{ 7, 123, 138 });
     g.drawRect (getLocalBounds(), 3);   // draw an outline around the component
-    
-    g.setColour (juce::Colours::white);
-    g.setFont (14.0f);
-    g.drawText ("PlaylistComponent", getLocalBounds(),
-                juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void PlaylistComponent::resized()
@@ -99,7 +94,7 @@ void PlaylistComponent::paintRowBackground (juce::Graphics& g,
     }
     else
     {
-        playlistTracks[rowNumber].searched ? g.fillAll(juce::Colour{ 255, 0, 0}) : g.fillAll(juce::Colour{ 162, 213, 198 });
+        playlistTracks[rowNumber].searched ? g.fillAll(juce::Colour{ 84, 15, 19 }) : g.fillAll(juce::Colour{ 162, 213, 198 });
     }
 }
 
@@ -111,7 +106,7 @@ void PlaylistComponent::paintCell (juce::Graphics& g,
                             bool rowIsSelected)
 {
     //set the drawing colour
-    rowIsSelected ? g.setColour(juce::Colour{ 162, 213, 198 }) : g.setColour(juce::Colour{ 84, 15, 19 });
+    rowIsSelected ? g.setColour(juce::Colour{ 162, 213, 198 }) : g.setColour(juce::Colour{ 36, 24, 57 });
     //paint track titles
     if(columnID == 1)
     {
@@ -162,6 +157,7 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
 {
+    // check if memory address is that of one of the buttons
     if (button == &loadToPlaylist)
     {
         loadIntoPlaylist();
@@ -174,6 +170,8 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
     {
         savePlaylist();
     }
+    // if it does not match one of the buttons then it is a button in the playlist table
+    // we use the buttons id to determine what row and column it resides in
     else
     {
     
@@ -214,6 +212,7 @@ int PlaylistComponent::parseCol(juce::String buttonID)
     return colStr.getIntValue();
 }
 
+//receives an array of tracks and parses the data for each track and creates a struct for each track
 void PlaylistComponent::setTracks(juce::Array<juce::File> tracksFile)
 {
     for( int i = 0; i < tracksFile.size(); ++i)
@@ -258,6 +257,7 @@ void PlaylistComponent::deleteSingleTrackFromPlaylist(unsigned int row)
     tableComponent.updateContent();
 }
 
+//opens or creates a txt and saves each tracks file path
 void PlaylistComponent::savePlaylist()
 {
     std::ofstream file("playlist.txt");
@@ -295,6 +295,9 @@ void PlaylistComponent::loadPlaylist()
     savedPlaylist.close();
 }
 
+//uses a seperate audio player to parse the meta data from the track
+//gets the length in seconds and then converts this value to minutes
+//then converts this value to a string to be displayed in the playlist
 juce::String PlaylistComponent::getLengthInMinutes(juce::URL audioURL)
 {
     playlistPlayer->loadURL(audioURL);
@@ -345,6 +348,7 @@ void PlaylistComponent::textEditorReturnKeyPressed (juce::TextEditor &)
                 t.searched = false;
             }
         }
+        tableComponent.updateContent();
+        tableComponent.repaint();
     }
-    tableComponent.updateContent();
 }

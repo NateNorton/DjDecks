@@ -9,12 +9,14 @@ DJAudioPlayer::~DJAudioPlayer()
 {
 }
 
-void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate) {
+void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
+{
     transportSource.prepareToPlay (samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) {
+void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill)
+{
     if(readerSource.get() == nullptr) {
         bufferToFill.clearActiveBufferRegion();
         return;
@@ -27,12 +29,14 @@ void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &buffer
     rmsLevelRight = juce::Decibels::gainToDecibels(bufferToFill.buffer->getRMSLevel(1, 0, bufferToFill.buffer->getNumSamples()));
 }
 
-void DJAudioPlayer::releaseResources() {
+void DJAudioPlayer::releaseResources()
+{
     transportSource.releaseResources();
     resampleSource.releaseResources();
 }
 
-void DJAudioPlayer::loadURL(juce::URL audioURL) {
+void DJAudioPlayer::loadURL(juce::URL audioURL)
+{
     // clear and reregister formats
     // fixed playlist load issues5
     formatManager.clearFormats();
@@ -40,22 +44,26 @@ void DJAudioPlayer::loadURL(juce::URL audioURL) {
     auto *reader = this->formatManager.createReaderFor(audioURL.createInputStream(juce::URL::InputStreamOptions{juce::URL::ParameterHandling::inAddress}));
     
     //if good file
-    if(reader != nullptr) {
+    if(reader != nullptr)
+    {
         std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
         transportSource.setSource(newSource.get(), 0, nullptr, reader -> sampleRate);
         readerSource.reset(newSource.release());
     }
 }
 
-void DJAudioPlayer::play() {
+void DJAudioPlayer::play()
+{
     transportSource.start();
 }
 
-void DJAudioPlayer::stop() {
+void DJAudioPlayer::stop()
+{
     transportSource.stop();
 }
 
-void DJAudioPlayer::setPosition(double posInSecs) {
+void DJAudioPlayer::setPosition(double posInSecs)
+{
     if(posInSecs < 0 || posInSecs > transportSource.getLengthInSeconds()) {
         DBG("WARNING: set p[osition " << posInSecs << " greater than length " << transportSource.getLengthInSeconds());
         return;
@@ -63,7 +71,8 @@ void DJAudioPlayer::setPosition(double posInSecs) {
     transportSource.setPosition(posInSecs);
 }
 
-void DJAudioPlayer::setGain(double gain) {
+void DJAudioPlayer::setGain(double gain)
+{
     transportSource.setGain(gain);
 }
 
@@ -80,7 +89,8 @@ float DJAudioPlayer::getRmsValue(const int channel) const
 }
 
 //receives a value 0-1
-void DJAudioPlayer::setPositionRelative(double pos) {
+void DJAudioPlayer::setPositionRelative(double pos)
+{
     if (pos >= 0 && pos <= 1) {
         double posInSecs = pos * transportSource.getLengthInSeconds();
         setPosition(posInSecs);

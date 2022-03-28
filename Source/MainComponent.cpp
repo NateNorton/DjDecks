@@ -38,18 +38,21 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate) {
+void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+{
     player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
     player2.prepareToPlay(samplesPerBlockExpected, sampleRate);
     mixerSource.addInputSource(&player1, false);
     mixerSource.addInputSource(&player2, false);
 }
 
-void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) {
+void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
+{
     mixerSource.getNextAudioBlock(bufferToFill);
 }
 
-void MainComponent::releaseResources() {
+void MainComponent::releaseResources()
+{
     mixerSource.removeAllInputs();
     mixerSource.releaseResources();
     player1.releaseResources();
@@ -57,12 +60,14 @@ void MainComponent::releaseResources() {
 }
 
 //==============================================================================
-void MainComponent::paint (juce::Graphics& g) {
+void MainComponent::paint (juce::Graphics& g)
+{
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll(juce::Colour{ 36, 24, 57 });
 }
 
-void MainComponent::resized() {
+void MainComponent::resized()
+{
     float widthSection = getWidth() / 2;
     float heightSection = getHeight() / 6;
     

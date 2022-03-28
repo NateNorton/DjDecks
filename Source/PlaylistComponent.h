@@ -34,9 +34,13 @@ public:
                     bool rowIsSelected) override;
     
     juce::Component* refreshComponentForCell (int rowNumber, int columnID, bool isRowDelected, Component *existingComponentToUpdate) override;
+    /** Called whne a button is clicked*/
     void buttonClicked(juce::Button* button) override;
+    /**Called whjen some of the tables columns are added, removed, hidden, or rearranged*/
     void tableColumnsChanged (juce::TableHeaderComponent *tableHeader) override;
+    /**Called when one or more of the tables columns are resized*/
     void tableColumnsResized (juce::TableHeaderComponent *tableHeader) override;
+    /** Called when the column by which the table should be sorted is changed */
     void tableSortOrderChanged (juce::TableHeaderComponent *tableHeader) override;
     
     /**called when return is pressed*/

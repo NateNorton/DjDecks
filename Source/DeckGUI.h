@@ -24,8 +24,11 @@ public:
     ~DeckGUI() override;
     
     void paint (juce::Graphics&) override;
+    /**called when the window is resized*/
     void resized() override;
+    /**Called when a button is clicked*/
     void buttonClicked(juce::Button* button) override;
+    /**called when a sliders value is changed*/
     void sliderValueChanged (juce::Slider *slider) override;
     /**load in the waveform from chosen track when played from the playlist component*/
     void loadWaveformFromPlaylist(juce::URL audioURL);

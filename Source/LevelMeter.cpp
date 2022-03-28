@@ -46,11 +46,6 @@ void LevelMeter::resized()
     gradient.addColour(0.3, juce::Colour{ 7, 123, 138 });
 }
 
-void LevelMeter::setLevel(const float value)
-{
-    
-}
-
 void LevelMeter::timerCallback()
 {
     //set the level with the audio player sending the channel for right and left
